@@ -7,6 +7,7 @@ import cv2
 from imutils.video import VideoStream
 import os
 from debug import Debug # type: ignore
+from newcsv import NewCsv
 avg = None
 motionCounter = 0
 minarea = 1000
@@ -15,9 +16,10 @@ info = 0
 loopcount = 0
 countaverage = 0
 bbaverage = 0
+filename = ''
 
-csvfile = open('wether_data.csv', 'a')
 
+ncsv = NewCsv()
 dbg = Debug()
 ap = argparse.ArgumentParser()
 
@@ -30,11 +32,12 @@ args = ap.parse_args()
 
 dbg.INFO('Set up arguments')
 
+"""
 csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame'])
 #csvfileWriter.writeheader()
 
 # Kept as refrence
-"""if args.g and args.n:
+if args.g and args.n:
     for i in range(args.n):
         print('SPAM', i+1)
 elif args.g:
@@ -57,6 +60,8 @@ time.sleep(2.5)
 while True:
     bbnum = 0
     ret, frame = cam.read()  # Read a frame from the camera
+    
+    filename = ncsv.newcsv(filename)
 
     if not ret:  # If reading the frame failed
         print("Error: Failed to read frame.")
@@ -129,12 +134,13 @@ while True:
         loopcount = -1
         bbaverage = 0
         startTime = time.time()"""
-    if bbnum > 0:    
-        csvfileWriter.writerow({'Time': timestamp, 'Number of drops per frame': bbnum})
+    if bbnum > 0:
+        with open(filename, 'a') as csvfile:
+            csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame'])
+            csvfileWriter.writerow({'Time': timestamp, 'Number of drops per frame': bbnum})
     
     loopcount += 1
     
 cam.release()
-
 cv2.destroyAllWindows()
 dbg.INFO('Ending program')

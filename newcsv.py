@@ -9,10 +9,10 @@ class NewCsv:
     def newcsv(self, filename):
         self.time = datetime.datetime.now()
         self.filetime = self.time.strftime('%Y_%m_%d')
-        newfilename = f'wether_data_{self.filetime}'
+        newfilename = f'wether_data_{self.filetime}.csv'
         
         if self.filetime not in filename:
-            with open(newfilename, 'x') as csvfile:
+            with open(newfilename, 'w') as csvfile:
                 csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame'])
                 csvfileWriter.writeheader()
             return newfilename
