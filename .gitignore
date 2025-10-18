@@ -1,9 +1,7 @@
-*[oa]
-*~
-*a
-!lib.a
-/TODO
-build/
+lib64
+bin/
+lib/
+include/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -221,3 +219,4 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+pyvenv.cfg
