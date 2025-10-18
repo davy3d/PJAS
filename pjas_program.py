@@ -135,5 +135,6 @@ while True:
     loopcount += 1
     
 cam.release()
+
 cv2.destroyAllWindows()
 dbg.INFO('Ending program')

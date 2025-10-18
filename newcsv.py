@@ -1,4 +1,5 @@
 import datetime
+import csv
 
 class NewCsv:
     
@@ -7,12 +8,13 @@ class NewCsv:
     
     def newcsv(self, filename):
         self.time = datetime.datetime.now()
-        self.timeday = self.time.strftime('%d')
-        self.timedif = self.time - datetime.timedelta(seconds=1)
-        self.timedif = self.timedif.strftime('%d')
         self.filetime = self.time.strftime('%Y_%m_%d')
+        newfilename = f'wether_data_{self.filetime}'
         
-        if self.timedif != self.time and self.filetime not in filename:
-            return open(f'wether_data_{self.filetime}', 'x')
+        if self.filetime not in filename:
+            with open(newfilename, 'x') as csvfile:
+                csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame'])
+                csvfileWriter.writeheader()
+            return newfilename
         else:
-            return None
+            return filename
