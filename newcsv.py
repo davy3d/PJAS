@@ -13,7 +13,7 @@ class NewCsv:
         
         if self.filetime not in filename:
             with open(newfilename, 'w') as csvfile:
-                csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame'])
+                csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame', 'Face in frame'])
                 csvfileWriter.writeheader()
             return newfilename
         else:

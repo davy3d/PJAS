@@ -4,10 +4,10 @@ import csv
 import datetime
 import imutils
 import cv2
-from imutils.video import VideoStream
 import os
 from debug import Debug # type: ignore
-from newcsv import NewCsv
+from newcsv import NewCsv # type: ignore
+
 avg = None
 motionCounter = 0
 minarea = 1000
@@ -17,6 +17,7 @@ loopcount = 0
 countaverage = 0
 bbaverage = 0
 filename = ''
+face = 'no'
 
 
 ncsv = NewCsv()
@@ -45,10 +46,24 @@ elif args.g:
 elif args.n:
     print('add -g!!')"""
     
-cam = cv2.VideoCapture(2) #webcam is 0, Logitech is 2, Freetalk is 4
+detectorPaths = {
+	"face": "haarcascade_frontalface_default.xml",
+	"face1": "haarcascade_profileface.xml",
+}
+
+dbg.INFO("loading haar cascades...")
+detectors = {}
+# loop over our detector paths
+for (name, path) in detectorPaths.items():
+	# load the haar cascade from disk and store it in the detectors
+	# dictionary
+    path = os.path.sep.join(['/home/xtreme/PJAS/haar_cascades_ex', path])
+    detectors[name] = cv2.CascadeClassifier(path)
+    
+cam = cv2.VideoCapture(0) #webcam is 0, Logitech is 2, Freetalk is 4
 
 if not cam.isOpened():
-    print("Error: Could not open video device.")
+    dbg.INFO("Error: Could not open video device.")
     exit()
 
 dbg.INFO('Succesfully set up camera')
@@ -75,15 +90,15 @@ while True:
  
     frame = imutils.resize(frame, width=500)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    gray = cv2.GaussianBlur(gray, (21, 21), 0)
+    graywithgb = cv2.GaussianBlur(gray, (21, 21), 0)
 	# if the average frame is None, initialize it
     if avg is None:
         dbg.INFO('Starting Background')
-        avg = gray.copy().astype("float")
+        avg = graywithgb.copy().astype("float")
         continue
     
-    cv2.accumulateWeighted(gray, avg, 0.5)
-    frameDelta = cv2.absdiff(gray, cv2.convertScaleAbs(avg))
+    cv2.accumulateWeighted(graywithgb, avg, 0.5)
+    frameDelta = cv2.absdiff(graywithgb, cv2.convertScaleAbs(avg))
     thresh = cv2.threshold(frameDelta, delta_thresh, 255, cv2.THRESH_BINARY)[1]
     thresh = cv2.dilate(thresh, None, iterations=2)
     cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -102,11 +117,29 @@ while True:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
         text = "Yes"
         bbnum += 1
-	# draw the text and timestamp on the frame
+    
+    face = 'no'
+    
+    # perform face detection using the appropriate haar cascade
+    faceRects = detectors["face"].detectMultiScale(
+		gray, scaleFactor=1.05, minNeighbors=5, minSize=(30, 30),
+		flags=cv2.CASCADE_SCALE_IMAGE)
+
+    	# loop over the face bounding boxes
+    for (fX, fY, fW, fH) in faceRects:
+        
+		# draw the face bounding box on the frame
+        cv2.rectangle(frame, (fX, fY), (fX + fW, fY + fH),
+			(0, 0, 255), 2)
+        face = 'Yes'
+        
+    # draw the text and timestamp on the frame
     ts = timestamp.strftime("%A %d %B %Y %I:%M:%S%p")
     cv2.putText(frame, "Rain?: {}".format(text), (10, 20),
 		cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
     cv2.putText(frame, "bb per frame: {}".format(bbnum), (10, 50),
+		cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+    cv2.putText(frame, "face?: {}".format(face), (10, 80),
 		cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
     cv2.putText(frame, ts, (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,
 		0.35, (0, 0, 255), 1)
@@ -136,8 +169,8 @@ while True:
         startTime = time.time()"""
     if bbnum > 0:
         with open(filename, 'a') as csvfile:
-            csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame'])
-            csvfileWriter.writerow({'Time': timestamp, 'Number of drops per frame': bbnum})
+            csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame', 'Face in frame'])
+            csvfileWriter.writerow({'Time': timestamp, 'Number of drops per frame': bbnum, 'Face in frame': face})
     
     loopcount += 1
     
