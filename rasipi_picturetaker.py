@@ -27,4 +27,4 @@ while True:
             
         # Release the camera
         cap.release()
-        sleep(30)
+    sleep(30)
