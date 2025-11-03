@@ -180,8 +180,8 @@ while True:
         startTime = time.time()"""
     if bbnum > 0:
         with open(filename, 'a') as csvfile:
-            csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame', 'Face in frame'])
-            csvfileWriter.writerow({'Time': timestamp, 'Number of drops per frame': bbnum, 'Face in frame': face})
+            csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame', 'rain on ground'])
+            csvfileWriter.writerow({'Time': timestamp, 'Number of drops per frame': bbnum, 'rain on ground': face})
     
     loopcount += 1
     
