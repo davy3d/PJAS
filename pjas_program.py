@@ -60,14 +60,14 @@ for (name, path) in detectorPaths.items():
     detectors[name] = cv2.CascadeClassifier(path)
     
 cam = cv2.VideoCapture(0) #webcam is 0, Logitech is 2, Freetalk is 4
-camharr = cv2.VideoCapture(2)
+camhaar = cv2.VideoCapture(2)
 
 if not cam.isOpened():
     dbg.INFO("Error: Could not open density video device.")
     exit()
     
-if not camharr.isOpened():
-    dbg.INFO("Error: Could not open harr video device.")
+if not camhaar.isOpened():
+    dbg.INFO("Error: Could not open haar video device.")
     exit()
 
 dbg.INFO('Succesfully set up camera')
@@ -79,7 +79,7 @@ time.sleep(2.5)
 while True:
     bbnum = 0
     ret, frame = cam.read()  # Read a frame from the camera
-    retharr, frameharr = camharr.read()
+    rethaar, framehaar = camhaar.read()
     
     filename = ncsv.newcsv(filename)
 
@@ -87,8 +87,8 @@ while True:
         print("Error: Failed to read frame.")
         break
     
-    if not retharr:  # If reading the frame failed
-        print("Error: Failed to read frame.")
+    if not rethaar:  # If reading the frame failed
+        print("Error: Failed to read haar frame.")
         break
     
     if info == 0:
@@ -138,7 +138,7 @@ while True:
     for (fX, fY, fW, fH) in faceRects:
         
 		# draw the face bounding box on the frame
-        cv2.rectangle(frameharr, (fX, fY), (fX + fW, fY + fH),
+        cv2.rectangle(framehaar, (fX, fY), (fX + fW, fY + fH),
 			(0, 0, 255), 2)
         face = 'Yes'
         
@@ -161,7 +161,7 @@ while True:
 
 	# display the security feed
     cv2.imshow(args.t, frame)
-    cv2.imshow(args.t, frameharr)
+    cv2.imshow(args.t, framehaar)
     if info == 0:
         info = 1
         dbg.INFO('Displaying feed...')
@@ -189,6 +189,6 @@ while True:
     loopcount += 1
     
 cam.release()
-camharr.release()
+camhaar.release()
 cv2.destroyAllWindows()
 dbg.INFO('Ending program')
