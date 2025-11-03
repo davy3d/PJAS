@@ -59,8 +59,8 @@ for (name, path) in detectorPaths.items():
     path = os.path.sep.join(['~/PJAS/haar_cascades_ex', path])
     detectors[name] = cv2.CascadeClassifier(path)
     
-cam = cv2.VideoCapture(2) #webcam is 0, Logitech is 2, Freetalk is 4
-camharr = cv2.VideoCapture(4)
+cam = cv2.VideoCapture(0) #webcam is 0, Logitech is 2, Freetalk is 4
+camharr = cv2.VideoCapture(2)
 
 if not cam.isOpened():
     dbg.INFO("Error: Could not open density video device.")
