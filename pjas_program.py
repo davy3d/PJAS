@@ -47,8 +47,7 @@ elif args.n:
     print('add -g!!')"""
     
 detectorPaths = {
-	"face": "haarcascade_frontalface_default.xml",
-	"face1": "haarcascade_profileface.xml",
+	"face": "haarcascade_frontalface_default.xml"
 }
 
 dbg.INFO("loading haar cascades...")
