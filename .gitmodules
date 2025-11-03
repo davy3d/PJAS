@@ -1,0 +1,3 @@
+[submodule "py-dbg"]
+	path = py-dbg
+	url = http://orthanc.tail27687d.ts.net:3000/xsd/py-dbg
