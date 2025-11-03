@@ -57,7 +57,7 @@ detectors = {}
 for (name, path) in detectorPaths.items():
 	# load the haar cascade from disk and store it in the detectors
 	# dictionary
-    path = os.path.sep.join(['/home/xtreme/PJAS/haar_cascades_ex', path])
+    path = os.path.sep.join(['~/PJAS/haar_cascades_ex', path])
     detectors[name] = cv2.CascadeClassifier(path)
     
 cam = cv2.VideoCapture(2) #webcam is 0, Logitech is 2, Freetalk is 4
