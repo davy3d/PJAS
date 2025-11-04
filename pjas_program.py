@@ -56,11 +56,14 @@ detectors = {}
 for (name, path) in detectorPaths.items():
 	# load the haar cascade from disk and store it in the detectors
 	# dictionary
-    path = os.path.sep.join(['~/PJAS/haar_cascades_ex', path])
+    path = os.path.sep.join([os.path.expanduser('~/PJAS/haar_cascades_ex'), path])
     detectors[name] = cv2.CascadeClassifier(path)
     
 cam = cv2.VideoCapture(0) #webcam is 0, Logitech is 2, Freetalk is 4
 camhaar = cv2.VideoCapture(2)
+
+cam.set(cv2.CAP_PROP_FPS, 15)
+camhaar.set(cv2.CAP_PROP_FPS, 15)
 
 if not cam.isOpened():
     dbg.INFO("Error: Could not open density video device.")
@@ -78,7 +81,9 @@ time.sleep(2.5)
 
 while True:
     bbnum = 0
+    
     ret, frame = cam.read()  # Read a frame from the camera
+    
     rethaar, framehaar = camhaar.read()
     
     filename = ncsv.newcsv(filename)
@@ -137,7 +142,7 @@ while True:
     	# loop over the face bounding boxes
     for (fX, fY, fW, fH) in faceRects:
         
-		# draw the face bounding box on the frame
+	    #draw the face bounding box on the frame
         cv2.rectangle(framehaar, (fX, fY), (fX + fW, fY + fH),
 			(0, 0, 255), 2)
         face = 'Yes'
@@ -160,8 +165,8 @@ while True:
         dbg.INFO('Succesfully drew bounding boxes')
 
 	# display the security feed
-    cv2.imshow(args.t, frame)
-    cv2.imshow(args.t, framehaar)
+    #cv2.imshow(args.t, frame)
+    #cv2.imshow(args.t, framehaar)
     if info == 0:
         info = 1
         dbg.INFO('Displaying feed...')
@@ -190,5 +195,5 @@ while True:
     
 cam.release()
 camhaar.release()
-cv2.destroyAllWindows()
+#cv2.destroyAllWindows()
 dbg.INFO('Ending program')
