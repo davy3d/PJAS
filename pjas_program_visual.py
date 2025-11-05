@@ -10,7 +10,7 @@ from newcsv import NewCsv # type: ignore
 
 avg = None
 motionCounter = 0
-minarea = 1000
+minarea = 300
 delta_thresh = 5
 info = 0
 loopcount = 1
@@ -18,8 +18,6 @@ countaverage = 0
 bbaverage = 0
 filename = ''
 face = 'no'
-contour_sizes = []
-rolling_window = 50
 
 
 ncsv = NewCsv()
@@ -124,18 +122,6 @@ while True:
         dbg.INFO('Succesfully grabbed countures')
     
     for c in cnts:
-         
-        # Inside your contour loop:
-        area = cv2.contourArea(c)
-        contour_sizes.append(area)
-        if len(contour_sizes) > rolling_window:
-            contour_sizes.pop(0)
-
-        # Calculate dynamic minarea
-        if contour_sizes:
-            avg_area = sum(contour_sizes) / len(contour_sizes)
-            minarea = max(100, avg_area * 0.5)  # adjust sensitivity
-            
 		# if the contour is too small, ignore it
         if cv2.contourArea(c) < minarea:
             continue
