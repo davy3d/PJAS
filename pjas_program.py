@@ -184,14 +184,16 @@ while True:
         rain = 'Yes'
     
     if loopcount >= 80:
-        bbaverage = round(bbaverage/loopcount, 2)
+        bbaveragerounded = round(bbaverage/loopcount, 2)
         loopcount = 0
         if bbaverage > 0:
             with open(filename, 'a') as csvfile:
-                row = {'Time': timestamp, 'Number of drops per frame': bbaverage, 'rain on ground': 'rain'}
+                row = {'Time': timestamp, 'Number of drops per frame': bbaveragerounded, 'rain on ground': 'rain'}
                 csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame', 'rain on ground'])
                 csvfileWriter.writerow(row)
-            dbg.INFO(row)
+            dbg.INFO(f"time: {timestamp}  drops: {bbaveragerounded}")
+        else:
+            dbg.INFO(bbaverage/loopcount)
                 
     loopcount += 1
     
