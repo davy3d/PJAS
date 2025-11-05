@@ -188,9 +188,11 @@ while True:
         loopcount = 0
         if bbaverage > 0:
             with open(filename, 'a') as csvfile:
+                row = {'Time': timestamp, 'Number of drops per frame': bbaverage, 'rain on ground': 'rain'}
                 csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame', 'rain on ground'])
-                csvfileWriter.writerow({'Time': timestamp, 'Number of drops per frame': bbaverage, 'rain on ground': 'rain'})
-    
+                csvfileWriter.writerow(row)
+            dbg.INFO(row)
+                
     loopcount += 1
     
     # Exit on 'q' key press
