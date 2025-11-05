@@ -124,7 +124,7 @@ while True:
         dbg.INFO('Succesfully grabbed countures')
     
     for c in cnts:
-        
+         
         # Inside your contour loop:
         area = cv2.contourArea(c)
         contour_sizes.append(area)
@@ -179,8 +179,9 @@ while True:
         dbg.INFO('Succesfully drew bounding boxes')
 
 	# display the security feed
-    #cv2.imshow(args.t, frame)
-    #cv2.imshow(args.t, framehaar)
+    cv2.imshow(args.t, frame)
+    cv2.imshow(args.t, framehaar)
+    
     if info == 0:
         info = 1
         dbg.INFO('Displaying feed...')
@@ -213,5 +214,5 @@ while True:
     
 cam.release()
 camhaar.release()
-#cv2.destroyAllWindows()
+cv2.destroyAllWindows()
 dbg.INFO('Ending program')
