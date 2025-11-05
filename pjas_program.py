@@ -184,7 +184,7 @@ while True:
         rain = 'Yes'
     
     if loopcount >= 80:
-        bbaverage = round(bbaverage/loopcount, 1)
+        bbaverage = round(bbaverage/loopcount, 2)
         loopcount = 0
         if bbaverage > 0:
             with open(filename, 'a') as csvfile:
