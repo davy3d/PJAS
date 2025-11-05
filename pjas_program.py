@@ -13,7 +13,7 @@ motionCounter = 0
 minarea = 1000
 delta_thresh = 5
 info = 0
-loopcount = 0
+loopcount = 1
 countaverage = 0
 bbaverage = 0
 filename = ''
@@ -170,13 +170,10 @@ while True:
     if info == 0:
         info = 1
         dbg.INFO('Displaying feed...')
-    # Exit on 'q' key press
-    if cv2.waitKey(1) & 0xFF == ord('q'): 
-        break
     
-    """bbaverage += bbnum
+    bbaverage += bbnum
     
-    if startTime > 1:
+    """if startTime > 1:
         countaverage = 0
         countaverage = round(bbaverage/round(time.time()-startTime, 2), 2)
         loopcount = -1
@@ -186,12 +183,19 @@ while True:
     if bbnum > 0:
         rain = 'Yes'
     
-    if bbnum > 0:
-        with open(filename, 'a') as csvfile:
-            csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame', 'rain on ground'])
-            csvfileWriter.writerow({'Time': timestamp, 'Number of drops per frame': bbnum, 'rain on ground': 'rain'})
+    if loopcount >= 80:
+        bbaverage = round(bbaverage/loopcount, 1)
+        loopcount = 0
+        if bbaverage > 0:
+            with open(filename, 'a') as csvfile:
+                csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame', 'rain on ground'])
+                csvfileWriter.writerow({'Time': timestamp, 'Number of drops per frame': bbaverage, 'rain on ground': 'rain'})
     
     loopcount += 1
+    
+    # Exit on 'q' key press
+    if cv2.waitKey(1) & 0xFF == ord('q'): 
+        break
     
 cam.release()
 camhaar.release()
