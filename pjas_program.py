@@ -193,7 +193,7 @@ while True:
                 csvfileWriter.writerow(row)
             dbg.INFO(f"time: {timestamp}  drops: {bbaveragerounded}")
         else:
-            dbg.INFO(bbaverage/loopcount)
+            dbg.INFO(f"time: {timestamp} drops: {bbaverage/loopcount}")
         loopcount = 0
                 
     loopcount += 1
