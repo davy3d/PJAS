@@ -185,7 +185,7 @@ while True:
     
     if loopcount >= 80:
         bbaveragerounded = round(bbaverage/loopcount, 2)
-        loopcount = 0
+        
         if bbaverage > 0:
             with open(filename, 'a') as csvfile:
                 row = {'Time': timestamp, 'Number of drops per frame': bbaveragerounded, 'rain on ground': 'rain'}
@@ -194,6 +194,7 @@ while True:
             dbg.INFO(f"time: {timestamp}  drops: {bbaveragerounded}")
         else:
             dbg.INFO(bbaverage/loopcount)
+        loopcount = 0
                 
     loopcount += 1
     
