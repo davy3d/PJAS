@@ -8,7 +8,7 @@ import datetime
 import time
 eMon = ('emeter_status.txt')
 
-IP = "192.168.1.125"
+IP = "192.168.1.137"
 
 async def off():
     p = IotPlug(IP)
