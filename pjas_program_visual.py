@@ -62,8 +62,8 @@ for (name, path) in detectorPaths.items():
 cam = cv2.VideoCapture(0) #webcam is 0, Logitech is 2, Freetalk is 4
 camhaar = cv2.VideoCapture(2)
 
-cam.set(cv2.CAP_PROP_FPS, 15)
-camhaar.set(cv2.CAP_PROP_FPS, 15)
+cam.set(cv2.CAP_PROP_FPS, 10)
+camhaar.set(cv2.CAP_PROP_FPS, 10)
 
 if not cam.isOpened():
     dbg.INFO("Error: Could not open density video device.")
@@ -163,8 +163,8 @@ while True:
     
     if info == 0:
         dbg.INFO('Succesfully drew bounding boxes')
-
-	# display the security feed
+   
+    # display the security feed
     cv2.imshow(args.t, frame)
     cv2.imshow(args.t, framehaar)
     
