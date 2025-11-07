@@ -180,7 +180,7 @@ while True:
         bbaverage = 0
         startTime = time.time()"""
         
-    if bbnum > 0:
+    if bbaverage > 0:
         rain = 'Yes'
     
     if loopcount >= 80:
@@ -195,6 +195,9 @@ while True:
         else:
             dbg.INFO(f"time: {timestamp} drops: {bbaverage/loopcount}")
         loopcount = 0
+        bbaveragerounded = 0
+        bbaverage = 0
+        rain = "No"
                 
     loopcount += 1
     
