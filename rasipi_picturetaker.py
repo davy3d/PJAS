@@ -1,6 +1,7 @@
 import cv2
 import datetime
 from time import sleep
+import os
 
 
 while True:
@@ -20,6 +21,7 @@ while True:
 
         if ret:
             # Save the captured frame
+            filename = os.path.join("haar_pictures", f"image_{timestamp}.jpg")
             cv2.imwrite(f"image_{timestamp}.jpg", frame)
             print("Image saved as captured_image.jpg")
         else:
