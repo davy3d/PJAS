@@ -6,7 +6,7 @@ from time import sleep
 while True:
     
     # Access the default camera
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(2)
     
     # Check if camera opened successfully
     if not cap.isOpened():
