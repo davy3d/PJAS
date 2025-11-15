@@ -7,6 +7,7 @@ import cv2
 import os
 from debug import Debug # type: ignore
 from newcsv import NewCsv # type: ignore
+from ultralytics import YOLO #type: ignore
 
 avg = None
 motionCounter = 0
@@ -23,6 +24,7 @@ face = 'no'
 ncsv = NewCsv()
 dbg = Debug()
 ap = argparse.ArgumentParser()
+rainmodel = YOLO('/home/pi/PJAS/best.pt')
 
 dbg.INFO('Intilized')
 
@@ -84,7 +86,7 @@ while True:
     
     ret, frame = cam.read()  # Read a frame from the camera
     
-    rethaar, framehaar = camhaar.read()
+    rethaar, frameyolo = camhaar.read()
     
     filename = ncsv.newcsv(filename)
 
@@ -135,21 +137,24 @@ while True:
     face = 'no'
     
     # perform face detection using the appropriate haar cascade
-    faceRects = detectors["face"].detectMultiScale(
-		gray, scaleFactor=1.05, minNeighbors=5, minSize=(30, 30),
-		flags=cv2.CASCADE_SCALE_IMAGE)
-
-    	# loop over the face bounding boxes
-    for (fX, fY, fW, fH) in faceRects:
-        
-	    #draw the face bounding box on the frame
-        cv2.rectangle(framehaar, (fX, fY), (fX + fW, fY + fH),
-			(0, 0, 255), 2)
-        face = 'Yes'
-        
+    ograinresults = rainmodel.predict(source=frameyolo, stream=True, conf=0.7)
+    
+    confidence = ''
+    class_name = ''
+    class_nm_conf = ''
+    for result in ograinresults:
+            # The 'plot()' method automatically draws the bounding boxes and labels on the frame
+            annotated_frame = result.plot() 
+            boxes = result.boxes
+            for box in boxes:
+                class_id = int(box.cls[0])
+                class_name = str(rainmodel.names[class_id])
+                confidence = str(float(box.conf[0]))
+                class_nm_conf = class_nm_conf + class_name + ':' + confidence + ' '
+    
     # draw the text and timestamp on the frame
     ts = timestamp.strftime("%A %d %B %Y %I:%M:%S%p")
-    cv2.putText(frame, "Rain?: {}".format(text), (10, 20),
+    cv2.putText(frame, "Rain?: {}".format(class_nm_conf), (10, 20),
 		cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
     cv2.putText(frame, "bb per frame: {}".format(bbnum), (10, 50),
 		cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
@@ -163,13 +168,6 @@ while True:
     
     if info == 0:
         dbg.INFO('Succesfully drew bounding boxes')
-
-	# display the security feed
-    #cv2.imshow(args.t, frame)
-    #cv2.imshow(args.t, framehaar)
-    if info == 0:
-        info = 1
-        dbg.INFO('Displaying feed...')
     
     bbaverage += bbnum
     
@@ -188,18 +186,30 @@ while True:
         
         if bbaverage > 0:
             with open(filename, 'a') as csvfile:
-                row = {'Time': timestamp, 'Number of drops per frame': bbaveragerounded, 'rain on ground': 'rain'}
+                
+                bbaveragerounded = bbaveragerounded * 5
+                row = {'Time': timestamp, 'Number of drops per frame': bbaveragerounded, 'rain on ground': class_nm_conf}
                 csvfileWriter = csv.DictWriter(csvfile, ['Time', 'Number of drops per frame', 'rain on ground'])
                 csvfileWriter.writerow(row)
+                
             dbg.INFO(f"time: {timestamp}  drops: {bbaveragerounded}")
+            
         else:
             dbg.INFO(f"time: {timestamp} drops: {bbaverage/loopcount}")
+            
         loopcount = 0
         bbaveragerounded = 0
         bbaverage = 0
-        rain = "No"
                 
     loopcount += 1
+    
+    # display the security feed
+    #cv2.imshow(args.t + 'falling', frame)
+    #cv2.imshow(args.t + 'OG rain', annotated_frame)
+    if info == 0:
+        info = 1
+        dbg.INFO('Displaying feed...')
+    
     
     # Exit on 'q' key press
     if cv2.waitKey(1) & 0xFF == ord('q'): 
