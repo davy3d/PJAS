@@ -137,7 +137,7 @@ while True:
     face = 'no'
     
     # perform face detection using the appropriate haar cascade
-    ograinresults = rainmodel.predict(source=frameyolo, stream=True, conf=0.7)
+    ograinresults = rainmodel.predict(source=frameyolo, stream=True, conf=0.7, verbose=False)
     
     confidence = ''
     class_name = ''
